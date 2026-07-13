@@ -575,10 +575,29 @@
     });
   }
 
+  function getToday(){
+    const t = new Date();
+    t.setHours(0,0,0,0);
+    return t;
+  }
+  function getVisibleWorkingDays(){
+    const today = getToday();
+    const visible = WORKING_DAYS.filter(d=> new Date(d+'T00:00:00') <= today);
+    return visible.length ? visible : [WORKING_DAYS[0]];
+  }
+  function getYAxisMax(currentMax){
+    const steps = [15,20,25,30,35,40,45,50,MAX];
+    for(const s of steps){ if(currentMax <= s-3) return s; }
+    return MAX;
+  }
+
   function renderChart(){
     const ctx = document.getElementById('stampChart').getContext('2d');
-    const labels = WORKING_DAYS.map(labelFor);
-    const datasets = MEMBERS.filter(m=>selected.has(m.name)).map(m=>{
+    const visibleDays = getVisibleWorkingDays();
+    const labels = visibleDays.map(labelFor);
+    const visibleCount = visibleDays.length;
+    const activeMembers = MEMBERS.filter(m=>selected.has(m.name));
+    const datasets = activeMembers.map(m=>{
       const isHi = highlighted===m.name;
       const dim = highlighted && !isHi;
       let borderColor = m.color;
@@ -587,7 +606,7 @@
       }
       return {
         label:m.name,
-        data:cumulativeSeries(m.name),
+        data:cumulativeSeries(m.name).slice(0, visibleCount),
         borderColor:borderColor,
         backgroundColor:borderColor,
         borderWidth:isHi?3:1.5,
@@ -598,7 +617,7 @@
     });
     datasets.push({
       label:'목표 (50개)',
-      data:WORKING_DAYS.map(()=>GOAL),
+      data:visibleDays.map(()=>GOAL),
       borderColor:'#4A3728',
       borderWidth:1.5,
       borderDash:[6,4],
@@ -606,6 +625,9 @@
       tension:0,
       order:99
     });
+
+    const currentMax = activeMembers.reduce((max,m)=> Math.max(max, totalOf(m.name)), 0);
+    const yMax = getYAxisMax(currentMax);
 
     if(chart){ chart.destroy(); }
     chart = new Chart(ctx, {
@@ -627,7 +649,7 @@
           }
         },
         scales:{
-          y:{ min:0, max:MAX+2, ticks:{stepSize:6, color:'#8A7A63', font:{size:11}}, grid:{color:'#EAE1CE'} },
+          y:{ min:0, max:yMax, ticks:{color:'#8A7A63', font:{size:11}}, grid:{color:'#EAE1CE'} },
           x:{ grid:{display:false}, ticks:{color:'#8A7A63', font:{size:11}} }
         }
       }
@@ -635,8 +657,7 @@
   }
 
   function expectedPace(){
-    const today = new Date('2026-07-13T00:00:00');
-    const elapsed = WORKING_DAYS.filter(d=> new Date(d+'T00:00:00') <= today).length;
+    const elapsed = getVisibleWorkingDays().length;
     return Math.round(GOAL * (elapsed/WORKING_DAYS.length));
   }
 
