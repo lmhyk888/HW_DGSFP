@@ -37,22 +37,23 @@
   }
   .masthead{
     display:flex;
-    flex-direction:column;
     align-items:center;
-    gap:10px;
-    padding:22px 24px;
+    justify-content:space-between;
+    gap:16px;
+    padding:20px 24px;
     margin:0 0 22px;
     background:#26211C;
     border-radius:10px;
+    flex-wrap:wrap;
   }
   .mh-title-row{
     display:flex;
     align-items:center;
-    gap:14px;
+    gap:12px;
   }
   .tri-mark{
     position:relative;
-    width:38px;height:38px;
+    width:30px;height:30px;
     flex:none;
   }
   .tri-mark span{
@@ -60,26 +61,25 @@
     border-radius:50%;
     opacity:0.92;
   }
-  .tri-mark span:nth-child(1){ width:20px;height:20px; background:#F2641A; top:0; left:9px; }
-  .tri-mark span:nth-child(2){ width:20px;height:20px; background:#C24D0E; top:14px; left:0; }
-  .tri-mark span:nth-child(3){ width:20px;height:20px; background:#FA9B54; top:14px; left:18px; }
+  .tri-mark span:nth-child(1){ width:16px;height:16px; background:#F2641A; top:0; left:7px; }
+  .tri-mark span:nth-child(2){ width:16px;height:16px; background:#C24D0E; top:11px; left:0; }
+  .tri-mark span:nth-child(3){ width:16px;height:16px; background:#FA9B54; top:11px; left:14px; }
   .masthead h1{
     font-weight:700;
-    font-size:27px;
-    margin:0;
+    font-size:21px;
+    margin:0 0 4px;
     letter-spacing:-0.3px;
     color:#FFFFFF;
   }
   .mh-sub-row{
     display:flex;
+    gap:8px;
     align-items:center;
-    justify-content:center;
-    gap:10px;
-    flex-wrap:wrap;
   }
   .mh-date{
     font-size:12.5px;
     color:rgba(255,255,255,0.62);
+    line-height:1.6;
   }
   .pill{
     font-weight:600;
@@ -287,7 +287,7 @@
   .storage-note{font-size:11px;color:var(--ink-faint);margin-top:6px;}
   .lock-pill{
     font-weight:600;
-    font-size:12.5px;
+    font-size:12px;
     color:#fff;
     background:var(--warn);
     border:none;
@@ -317,10 +317,12 @@
   <div class="masthead">
     <div class="mh-title-row">
       <div class="tri-mark"><span></span><span></span><span></span></div>
-      <h1>참여 도장 현황판</h1>
+      <div>
+        <h1>참여 도장 현황판</h1>
+        <span class="mh-date">2026.07.03 – 07.30 · 근무일 18일 기준 · 목표 50개 이상</span>
+      </div>
     </div>
     <div class="mh-sub-row">
-      <span class="mh-date">2026.07.03 – 07.30 · 근무일 18일 기준 · 목표 50개 이상</span>
       <div class="pill">하루 최대 3개</div>
       <button class="lock-pill" id="lockPill" type="button"></button>
     </div>
