@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>참여 도장 현황판</title>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
   :root{
@@ -222,7 +221,7 @@
     position:sticky;top:0;background:var(--surface);
   }
   tr.row-hover:hover{background:#F8F2E4;cursor:pointer;}
-  .num{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;}
+  .num{font-variant-numeric:tabular-nums;}
   .bar-cell{width:160px;}
   .bar-bg{
     height:7px;background:#F0E9D9;border-radius:4px;overflow:hidden;
@@ -242,7 +241,7 @@
     font-family:inherit;font-size:13px;padding:8px 12px;border-radius:7px;border:1px solid var(--border);background:#fff;color:var(--ink);
   }
   .entry-total{
-    font-family:'JetBrains Mono',monospace;font-weight:600;font-size:13px;color:var(--primary);
+    font-weight:600;font-size:13px;color:var(--primary);font-variant-numeric:tabular-nums;
     background:var(--primary-wash);
     padding:6px 12px;
     border-radius:7px;
@@ -259,7 +258,7 @@
     padding:9px 10px;
   }
   .day-card .d-label{
-    font-family:'JetBrains Mono',monospace;
+    font-variant-numeric:tabular-nums;
     font-size:11px;
     font-weight:600;
     color:var(--ink-faint);
@@ -399,7 +398,7 @@
       <b>memberName, date, attended</b> 열을 읽어 이름·근무일이 일치하는 사람의 <b>출석</b> 도장만 자동으로 켜거나 끕니다.
       팀 명단에 없는 이름은 적용하지 않고 아래에 목록으로 알려드립니다.
     </p>
-    <textarea id="csvInput" rows="6" style="width:100%;font-family:'JetBrains Mono',monospace;font-size:11.5px;padding:10px;border:1px solid var(--border);border-radius:7px;background:#FBF8EF;color:var(--ink);resize:vertical;" placeholder="memberName,date,attended,callCount,createdAt,updatedAt&#10;이미현,2026-07-08,TRUE,7,..."></textarea>
+    <textarea id="csvInput" rows="6" style="width:100%;font-size:11.5px;padding:10px;border:1px solid var(--border);border-radius:7px;background:#FBF8EF;color:var(--ink);resize:vertical;" placeholder="memberName,date,attended,callCount,createdAt,updatedAt&#10;이미현,2026-07-08,TRUE,7,..."></textarea>
     <div class="footer-actions">
       <button class="ghost-btn" id="csvApplyBtn" style="border-color:var(--primary);color:var(--primary);">붙여넣은 CSV 적용</button>
       <span class="storage-note" id="csvStatus"></span>
