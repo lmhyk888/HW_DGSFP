@@ -1,0 +1,629 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>참여 도장 현황판</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#F4EFE5;
+    --surface:#FFFEFA;
+    --border:#E7DFCC;
+    --ink:#2A231C;
+    --ink-soft:#8A7A63;
+    --ink-faint:#B0A28A;
+    --primary:#F2641A;
+    --primary-deep:#C24D0E;
+    --primary-wash:#FDECDF;
+    --success:#5B7A34;
+    --success-wash:#EEF1E2;
+    --warn:#B0330F;
+    --warn-wash:#FBE7E1;
+    --navy:#4A3728;
+    --shadow: 0 1px 2px rgba(42,35,28,0.05), 0 1px 8px rgba(42,35,28,0.06);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;padding:24px 12px;background:var(--bg);color:var(--ink);}
+  .wrap{
+    font-family:'PretendardVariable',system-ui,-apple-system,sans-serif;
+    background:var(--bg);
+    padding:26px 24px 36px;
+    border-radius:12px;
+    max-width:1180px;
+    margin:0 auto;
+  }
+  .masthead{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    padding:20px 24px;
+    margin:-26px -24px 22px;
+    background:#26211C;
+    border-radius:12px 12px 0 0;
+    flex-wrap:wrap;
+  }
+  .masthead .title-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .tri-mark{
+    position:relative;
+    width:30px;height:30px;
+    flex:none;
+  }
+  .tri-mark span{
+    position:absolute;
+    border-radius:50%;
+    opacity:0.92;
+  }
+  .tri-mark span:nth-child(1){ width:16px;height:16px; background:#F2641A; top:0; left:7px; }
+  .tri-mark span:nth-child(2){ width:16px;height:16px; background:#C24D0E; top:11px; left:0; }
+  .tri-mark span:nth-child(3){ width:16px;height:16px; background:#FA9B54; top:11px; left:14px; }
+  .masthead h1{
+    font-weight:700;
+    font-size:21px;
+    margin:0 0 4px;
+    letter-spacing:-0.3px;
+    color:#FFFFFF;
+  }
+  .masthead p{
+    margin:0;
+    font-size:12.5px;
+    color:rgba(255,255,255,0.62);
+    line-height:1.6;
+  }
+  .pill{
+    font-weight:600;
+    font-size:12.5px;
+    color:#fff;
+    background:var(--primary);
+    border-radius:20px;
+    padding:7px 14px;
+    white-space:nowrap;
+  }
+  .rule{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-left:3px solid var(--primary);
+    border-radius:8px;
+    padding:12px 16px;
+    margin-bottom:18px;
+    line-height:1.7;
+    box-shadow:var(--shadow);
+  }
+  .rule b{color:var(--ink);font-weight:600;}
+  section{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:20px 20px 22px;
+    margin-bottom:16px;
+    box-shadow:var(--shadow);
+  }
+  section > h2{
+    font-size:14.5px;
+    font-weight:700;
+    margin:0 0 14px;
+    color:var(--ink);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  section > h2 .sub{
+    font-size:11.5px;
+    font-weight:500;
+    color:var(--ink-faint);
+  }
+  .filter-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+    margin-bottom:16px;
+  }
+  .team-group{
+    background:#FBF8EF;
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:10px 12px;
+    min-width:150px;
+  }
+  .team-group .t-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-weight:700;
+    font-size:12px;
+    margin-bottom:6px;
+    color:var(--ink);
+  }
+  .team-group .t-head button{
+    font-size:10.5px;
+    border:none;
+    background:none;
+    color:var(--ink-faint);
+    cursor:pointer;
+    font-weight:500;
+  }
+  .team-group .t-head button:hover{color:var(--primary);}
+  .chk-row{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:12.5px;
+    padding:2.5px 0;
+    cursor:pointer;
+    user-select:none;
+    color:var(--ink-soft);
+  }
+  .chk-row input{accent-color:var(--primary);}
+  .chk-row .dot{
+    width:7px;height:7px;border-radius:50%;flex:none;
+  }
+  #chartHolder{
+    position:relative;
+    height:340px;
+  }
+  .legend-note{
+    font-size:11.5px;
+    color:var(--ink-faint);
+    margin-top:10px;
+  }
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:12.5px;
+  }
+  th,td{
+    text-align:left;
+    padding:9px 10px;
+    border-bottom:1px solid var(--border);
+    white-space:nowrap;
+  }
+  th{
+    font-size:11px;
+    color:var(--ink-faint);
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:0.3px;
+    position:sticky;top:0;background:var(--surface);
+  }
+  tr.row-hover:hover{background:#F8F2E4;cursor:pointer;}
+  .num{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;}
+  .bar-cell{width:160px;}
+  .bar-bg{
+    height:7px;background:#F0E9D9;border-radius:4px;overflow:hidden;
+  }
+  .bar-fill{height:100%;background:var(--primary);border-radius:4px;}
+  .bar-fill.done{background:var(--success);}
+  .badge{
+    font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:5px;
+  }
+  .badge.done{background:var(--success-wash);color:var(--success);}
+  .badge.pace{background:var(--warn-wash);color:var(--warn);}
+  .badge.ok{background:var(--primary-wash);color:var(--primary);}
+  .view-badge{
+    font-size:11.5px;
+    font-weight:600;
+    color:var(--ink-soft);
+    background:#FBF8EF;
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:6px 13px;
+    white-space:nowrap;
+  }
+  .sync-note{
+    font-size:11px;
+    color:var(--ink-faint);
+    text-align:center;
+    margin-top:8px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="masthead">
+    <div class="title-row">
+      <div class="tri-mark"><span></span><span></span><span></span></div>
+      <div>
+        <h1>참여 도장 현황판</h1>
+        <p>2026.07.03 – 07.30 · 근무일 18일 기준 · 목표 50개 이상</p>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <div class="pill">하루 최대 3개</div>
+      <div class="view-badge">👀 보기 전용 공개 페이지</div>
+    </div>
+  </div>
+
+  <div class="rule">
+    하루 도장 <b>최대 3개</b>: ① 출석 1개 ② 2분콜 2회 이상 1개 ③ 2분콜 3회 이상 1개.
+    주말과 <b>7/7, 7/17</b>은 제외 — 총 근무일 18일 × 3개 = 54개 만점, <b>50개 이상 달성이 목표</b>입니다.
+    이 페이지는 결과 확인 전용이며, 도장 입력은 관리자만 별도 화면에서 진행합니다.
+  </div>
+
+  <section>
+    <h2>팀원 비교 그래프 <span class="sub">팀별 필터 · 이름 클릭 시 강조</span></h2>
+    <div class="filter-row" id="teamFilters"></div>
+    <div id="chartHolder"><canvas id="stampChart"></canvas></div>
+    <div class="legend-note">아래 표에서 이름을 클릭하면 그래프에서 해당 팀원의 선이 강조됩니다.</div>
+  </section>
+
+  <section>
+    <h2>누적 현황표</h2>
+    <div style="max-height:420px;overflow:auto;">
+    <table>
+      <thead>
+        <tr>
+          <th>팀</th><th>이름</th><th>차월</th><th>누적 도장</th><th>진행률 (÷50)</th><th>상태</th>
+        </tr>
+      </thead>
+      <tbody id="summaryBody"></tbody>
+    </table>
+    </div>
+  </section>
+
+  <div class="sync-note" id="syncNote"></div>
+</div>
+
+<script>
+(function(){
+  const TEAMS = [
+    {id:1, name:'1팀', hue:358, members:[
+      ['이미현',8],['신은주',6],['권기철',5],['이미래',5],['김가령',3]
+    ]},
+    {id:2, name:'2팀', hue:42, members:[
+      ['이나현',8],['김미애',8],['신양호',7],['권도은',7],['배은아',5],['김태림',4],['김지수',3]
+    ]},
+    {id:3, name:'3팀', hue:85, members:[
+      ['임성훈',12],['조소영',3],['지가인',3],['김준년',3]
+    ]},
+    {id:4, name:'4팀', hue:322, members:[
+      ['황수진',11],['강미항',8],['변금조',6],['도언주',3],['이지연',3],['이영미',3]
+    ]}
+  ];
+
+  const WORKING_DAYS = [
+    '2026-07-03','2026-07-06','2026-07-08','2026-07-09','2026-07-10',
+    '2026-07-13','2026-07-14','2026-07-15','2026-07-16',
+    '2026-07-20','2026-07-21','2026-07-22','2026-07-23','2026-07-24',
+    '2026-07-27','2026-07-28','2026-07-29','2026-07-30'
+  ];
+  const GOAL = 50;
+  const MAX = WORKING_DAYS.length * 3;
+  const SNAPSHOT_LABEL = '2026-07-13 기준 (출석 시트 반영)';
+
+  const MEMBERS = [];
+  TEAMS.forEach(team=>{
+    team.members.forEach(([name,months],idx)=>{
+      const lightness = 38 + idx*6;
+      const color = `hsl(${team.hue} 46% ${Math.min(lightness,58)}%)`;
+      MEMBERS.push({name, months, teamId:team.id, teamName:team.name, color});
+    });
+  });
+
+  // 출석 시트(CSV) 스냅샷 — 관리자가 갱신을 요청할 때마다 이 블록이 최신 내용으로 교체됩니다.
+  const ATTENDANCE_CSV = `memberName,date,attended
+이민혁,2026-07-08,TRUE
+김가령,2026-07-03,TRUE
+이미래,2026-07-03,TRUE
+이미현,2026-07-03,TRUE
+권도은,2026-07-03,TRUE
+김지수,2026-07-03,TRUE
+김태림,2026-07-03,TRUE
+신양호,2026-07-03,TRUE
+이나현,2026-07-03,TRUE
+김준년,2026-07-03,TRUE
+조소영,2026-07-03,TRUE
+지가인,2026-07-03,TRUE
+강미항,2026-07-03,TRUE
+도언주,2026-07-03,TRUE
+변금조,2026-07-03,TRUE
+이영미,2026-07-03,TRUE
+황수진,2026-07-03,TRUE
+김가령,2026-07-06,TRUE
+이미현,2026-07-06,TRUE
+김미애,2026-07-06,TRUE
+김지수,2026-07-06,TRUE
+김태림,2026-07-06,TRUE
+신양호,2026-07-06,TRUE
+이나현,2026-07-06,TRUE
+도언주,2026-07-06,TRUE
+이영미,2026-07-06,TRUE
+이지연,2026-07-06,TRUE
+권기철,2026-07-03,FALSE
+신은주,2026-07-03,FALSE
+김미애,2026-07-03,FALSE
+배은아,2026-07-03,FALSE
+임성훈,2026-07-03,FALSE
+이지연,2026-07-03,FALSE
+권기철,2026-07-06,FALSE
+신은주,2026-07-06,FALSE
+이미래,2026-07-06,FALSE
+권도은,2026-07-06,FALSE
+배은아,2026-07-06,FALSE
+김준년,2026-07-06,FALSE
+임성훈,2026-07-06,FALSE
+조소영,2026-07-06,FALSE
+지가인,2026-07-06,FALSE
+강미항,2026-07-06,FALSE
+변금조,2026-07-06,FALSE
+황수진,2026-07-06,FALSE
+이나현,2026-07-08,TRUE
+지가인,2026-07-08,TRUE
+권도은,2026-07-08,TRUE
+도언주,2026-07-08,TRUE
+김가령,2026-07-08,TRUE
+김태림,2026-07-08,TRUE
+김준년,2026-07-08,TRUE
+변금조,2026-07-08,TRUE
+이미래,2026-07-08,TRUE
+강미항,2026-07-08,TRUE
+황수진,2026-07-08,TRUE
+신은주,2026-07-08,TRUE
+권기철,2026-07-08,TRUE
+김미애,2026-07-08,TRUE
+이미현,2026-07-08,FALSE
+김지수,2026-07-08,FALSE
+배은아,2026-07-08,FALSE
+신양호,2026-07-08,FALSE
+임성훈,2026-07-08,FALSE
+조소영,2026-07-08,FALSE
+이영미,2026-07-08,FALSE
+이지연,2026-07-08,FALSE
+이나현,2026-07-09,TRUE
+권도은,2026-07-09,TRUE
+김미애,2026-07-09,TRUE
+김태림,2026-07-09,TRUE
+지가인,2026-07-09,TRUE
+김준년,2026-07-09,TRUE
+이미래,2026-07-09,TRUE
+도언주,2026-07-09,TRUE
+이지연,2026-07-09,TRUE
+이영미,2026-07-09,TRUE
+김가령,2026-07-09,TRUE
+조소영,2026-07-09,TRUE
+황수진,2026-07-09,TRUE
+김미애,2026-07-10,TRUE
+이미래,2026-07-10,TRUE
+조소영,2026-07-10,TRUE
+지가인,2026-07-10,TRUE
+김태림,2026-07-10,TRUE
+도언주,2026-07-10,TRUE
+황수진,2026-07-10,TRUE
+김가령,2026-07-10,TRUE
+신양호,2026-07-10,TRUE
+김준년,2026-07-10,TRUE
+배은아,2026-07-10,TRUE
+이나현,2026-07-10,TRUE
+신은주,2026-07-10,TRUE
+권도은,2026-07-10,TRUE
+이영미,2026-07-10,TRUE
+이미현,2026-07-10,TRUE
+권기철,2026-07-09,FALSE
+신은주,2026-07-09,FALSE
+이미현,2026-07-09,FALSE
+김지수,2026-07-09,FALSE
+배은아,2026-07-09,FALSE
+신양호,2026-07-09,FALSE
+임성훈,2026-07-09,FALSE
+강미항,2026-07-09,FALSE
+변금조,2026-07-09,FALSE
+신양호,2026-07-13,TRUE
+지가인,2026-07-13,TRUE
+이나현,2026-07-13,TRUE
+권도은,2026-07-13,TRUE
+이미래,2026-07-13,TRUE
+변금조,2026-07-13,TRUE
+도언주,2026-07-13,TRUE
+배은아,2026-07-13,TRUE
+김준년,2026-07-13,TRUE
+이영미,2026-07-13,TRUE
+김미애,2026-07-13,TRUE
+김가령,2026-07-13,TRUE
+이지연,2026-07-13,TRUE
+권기철,2026-07-10,FALSE
+김지수,2026-07-10,FALSE
+임성훈,2026-07-10,FALSE
+강미항,2026-07-10,FALSE
+변금조,2026-07-10,FALSE
+이지연,2026-07-10,FALSE`;
+
+  let DATA = {};
+  let selected = new Set(MEMBERS.map(m=>m.name));
+  let highlighted = null;
+  let chart = null;
+
+  function emptyEntry(){ return {a:false,c2:false,c3:false}; }
+  function getEntry(name,date){
+    if(!DATA[name]) DATA[name]={};
+    if(!DATA[name][date]) DATA[name][date]=emptyEntry();
+    return DATA[name][date];
+  }
+  function dayScore(e){ return (e.a?1:0)+(e.c2?1:0)+(e.c3?1:0); }
+  function cumulativeSeries(name){
+    let sum=0;
+    return WORKING_DAYS.map(d=>{
+      const e = DATA[name] && DATA[name][d] ? DATA[name][d] : emptyEntry();
+      sum += dayScore(e);
+      return sum;
+    });
+  }
+  function totalOf(name){
+    const s = cumulativeSeries(name);
+    return s[s.length-1] || 0;
+  }
+
+  function loadAttendanceSnapshot(){
+    const memberNames = new Set(MEMBERS.map(m=>m.name));
+    const lines = ATTENDANCE_CSV.split(/\r?\n/).map(l=>l.trim()).filter(l=>l.length>0);
+    const start = /^memberName\s*,/i.test(lines[0]||'') ? 1 : 0;
+    for(let i=start;i<lines.length;i++){
+      const cols = lines[i].split(',');
+      const name = (cols[0]||'').trim();
+      const date = (cols[1]||'').trim();
+      const attendedRaw = (cols[2]||'').trim().toUpperCase();
+      if(!memberNames.has(name) || !WORKING_DAYS.includes(date)) continue;
+      if(attendedRaw !== 'TRUE' && attendedRaw !== 'FALSE') continue;
+      getEntry(name, date).a = (attendedRaw === 'TRUE');
+    }
+  }
+
+  function labelFor(dateStr){
+    const [,m,d] = dateStr.split('-');
+    return `${parseInt(m)}/${parseInt(d)}`;
+  }
+
+  function renderTeamFilters(){
+    const box = document.getElementById('teamFilters');
+    box.innerHTML='';
+    TEAMS.forEach(team=>{
+      const g = document.createElement('div');
+      g.className='team-group';
+      const head = document.createElement('div');
+      head.className='t-head';
+      head.innerHTML = `<span>${team.name}</span>`;
+      const btnAll = document.createElement('button');
+      btnAll.textContent='전체';
+      btnAll.onclick = ()=>{ team.members.forEach(([n])=>selected.add(n)); syncChecks(); renderChart(); };
+      const btnNone = document.createElement('button');
+      btnNone.textContent='해제';
+      btnNone.style.marginLeft='6px';
+      btnNone.onclick = ()=>{ team.members.forEach(([n])=>selected.delete(n)); syncChecks(); renderChart(); };
+      const btnWrap = document.createElement('span');
+      btnWrap.appendChild(btnAll); btnWrap.appendChild(btnNone);
+      head.appendChild(btnWrap);
+      g.appendChild(head);
+      team.members.forEach(([name])=>{
+        const m = MEMBERS.find(x=>x.name===name);
+        const row = document.createElement('label');
+        row.className='chk-row';
+        row.innerHTML = `<input type="checkbox" data-name="${name}" checked>
+          <span class="dot" style="background:${m.color}"></span>${name}`;
+        row.querySelector('input').onchange = (e)=>{
+          if(e.target.checked) selected.add(name); else selected.delete(name);
+          renderChart();
+        };
+        g.appendChild(row);
+      });
+      box.appendChild(g);
+    });
+  }
+  function syncChecks(){
+    document.querySelectorAll('#teamFilters input[type=checkbox]').forEach(inp=>{
+      inp.checked = selected.has(inp.dataset.name);
+    });
+  }
+
+  function renderChart(){
+    const ctx = document.getElementById('stampChart').getContext('2d');
+    const labels = WORKING_DAYS.map(labelFor);
+    const datasets = MEMBERS.filter(m=>selected.has(m.name)).map(m=>{
+      const isHi = highlighted===m.name;
+      const dim = highlighted && !isHi;
+      let borderColor = m.color;
+      if(dim){
+        borderColor = m.color.replace('hsl(', 'hsla(').replace(')', ' / 0.15)');
+      }
+      return {
+        label:m.name,
+        data:cumulativeSeries(m.name),
+        borderColor:borderColor,
+        backgroundColor:borderColor,
+        borderWidth:isHi?3:1.5,
+        pointRadius:isHi?2.5:0,
+        tension:0.25,
+        order:isHi?0:1
+      };
+    });
+    datasets.push({
+      label:'목표 (50개)',
+      data:WORKING_DAYS.map(()=>GOAL),
+      borderColor:'#4A3728',
+      borderWidth:1.5,
+      borderDash:[6,4],
+      pointRadius:0,
+      tension:0,
+      order:99
+    });
+
+    if(chart){ chart.destroy(); }
+    chart = new Chart(ctx, {
+      type:'line',
+      data:{labels, datasets},
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        interaction:{mode:'nearest', intersect:false},
+        plugins:{
+          legend:{display:false},
+          tooltip:{
+            backgroundColor:'#2A231C',
+            padding:10,
+            titleFont:{weight:'600'},
+            callbacks:{
+              label:(item)=> `${item.dataset.label}: ${item.formattedValue}개`
+            }
+          }
+        },
+        scales:{
+          y:{ min:0, max:MAX+2, ticks:{stepSize:6, color:'#8A7A63', font:{size:11}}, grid:{color:'#EAE1CE'} },
+          x:{ grid:{display:false}, ticks:{color:'#8A7A63', font:{size:11}} }
+        }
+      }
+    });
+  }
+
+  function expectedPace(){
+    const today = new Date('2026-07-13T00:00:00');
+    const elapsed = WORKING_DAYS.filter(d=> new Date(d+'T00:00:00') <= today).length;
+    return Math.round(GOAL * (elapsed/WORKING_DAYS.length));
+  }
+
+  function renderSummary(){
+    const body = document.getElementById('summaryBody');
+    body.innerHTML='';
+    const sorted = [...MEMBERS].sort((a,b)=> totalOf(b.name)-totalOf(a.name));
+    sorted.forEach(m=>{
+      const total = totalOf(m.name);
+      const pct = Math.min(100, Math.round(total/GOAL*100));
+      const done = total>=GOAL;
+      const tr = document.createElement('tr');
+      tr.className='row-hover';
+      tr.innerHTML = `
+        <td>${m.teamName}</td>
+        <td><span class="dot" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${m.color};margin-right:7px;"></span>${m.name}</td>
+        <td>${m.months}차월</td>
+        <td class="num">${total} / ${MAX}</td>
+        <td class="bar-cell">
+          <div class="bar-bg"><div class="bar-fill ${done?'done':''}" style="width:${pct}%"></div></div>
+        </td>
+        <td>${done ? '<span class="badge done">달성</span>' : (total >= expectedPace() ? '<span class="badge ok">순조</span>' : '<span class="badge pace">추격 필요</span>')}</td>
+      `;
+      tr.onclick = ()=>{
+        highlighted = (highlighted===m.name) ? null : m.name;
+        renderChart();
+      };
+      body.appendChild(tr);
+    });
+  }
+
+  function init(){
+    loadAttendanceSnapshot();
+    renderTeamFilters();
+    renderChart();
+    renderSummary();
+    document.getElementById('syncNote').textContent = `데이터 스냅샷: ${SNAPSHOT_LABEL} · 실시간 자동 갱신이 아니며, 관리자 요청 시에만 업데이트됩니다.`;
+  }
+  init();
+})();
+</script>
+</body>
+</html>
