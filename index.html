@@ -217,6 +217,62 @@
   @media (max-width:640px){
     .table-hint{display:block;}
   }
+  .reward-intro p{
+    margin:0 0 4px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    line-height:1.6;
+  }
+  .reward-intro b{color:var(--ink);font-weight:600;}
+  .reward-grid{
+    display:flex;
+    gap:16px;
+    flex-wrap:wrap;
+    margin:14px 0;
+  }
+  .reward-table-wrap{
+    flex:1 1 220px;
+    background:#FBF8EF;
+    border:1px solid var(--border);
+    border-top:3px solid var(--primary);
+    border-radius:8px;
+    padding:12px 14px;
+  }
+  .reward-table-wrap h3{
+    font-size:12.5px;
+    font-weight:700;
+    margin:0 0 8px;
+    color:var(--ink);
+  }
+  .reward-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:12.5px;
+  }
+  .reward-table th{
+    font-size:10.5px;
+    color:var(--ink-faint);
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:0.3px;
+    text-align:left;
+    padding:6px 4px;
+    border-bottom:1px solid var(--border);
+  }
+  .reward-table td{
+    padding:7px 4px;
+    border-bottom:1px solid var(--border);
+    color:var(--ink-soft);
+  }
+  .reward-table tr:last-child td{border-bottom:none;}
+  .reward-amount{color:var(--primary);font-weight:700;}
+  .reward-notes p{
+    font-size:11px;
+    color:var(--ink-faint);
+    margin:4px 0;
+    line-height:1.6;
+  }
+  .reward-example{font-style:italic;}
   table{
     width:100%;
     border-collapse:collapse;
@@ -368,11 +424,43 @@
     </div>
   </div>
 
-  <div class="rule">
-    하루 도장 <b>최대 3개</b>: ① 출석 1개 ② 2분콜 2회 이상 1개 ③ 2분콜 3회 이상 1개.<br>
-    <b>50개 이상 달성이 목표</b>!(주말과 <b>7/7, 7/17</b>은 제외.)<br>
-    도장 입력은 관리자만 우측 상단 잠금 표시를 풀어 진행할 수 있습니다.
-  </div>
+  <section>
+    <h2>신인학습회 특별 시상 <span class="sub">2026.07 한달간 · 3~13차월 신인 SFP 대상</span></h2>
+    <div class="reward-intro">
+      <p><b>시책전개대상</b>: 학습회 14회 이상 참여한 3~13차월 신인 SFP</p>
+      <p><b>시상내용</b>: 도장 날인 개수 달성 기준에 해당하는 시상금 지급</p>
+    </div>
+    <div class="reward-grid">
+      <div class="reward-table-wrap">
+        <h3>도장 날인 기준 (일일기준)</h3>
+        <table class="reward-table">
+          <thead><tr><th>기준</th><th>도장 날인</th></tr></thead>
+          <tbody>
+            <tr><td>학습회 참여 (시간연수)</td><td>1개 날인</td></tr>
+            <tr><td>2.0 유효콜</td><td>1개 날인</td></tr>
+            <tr><td>3.0 유효콜</td><td>2개 날인</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="reward-table-wrap">
+        <h3>도장 날인 갯수별 시상금</h3>
+        <table class="reward-table">
+          <thead><tr><th>도장 날인 갯수</th><th>시상금</th></tr></thead>
+          <tbody>
+            <tr><td>50개</td><td class="reward-amount">10만원</td></tr>
+            <tr><td>40개</td><td class="reward-amount">5만원</td></tr>
+            <tr><td>30개</td><td class="reward-amount">3만원</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="reward-notes">
+      <p>* 주말과 <b>7/7, 7/17</b>은 제외.</p>
+      <p>* 학습회 참여 + 참여 당일 3.0 유효콜 달성 시 3개 날인</p>
+      <p>* 필수교육 참석으로 인한 미참여 시 "도장 날인" 기준 1일당 -3개 평가</p>
+      <p class="reward-example">예) A영업가족본부 연수원 1박2일 교육 참석으로 학습회 미참석 인정 처리 후 한달 정산 결과 44개 도장 날인 시 10만원 지급</p>
+    </div>
+  </section>
 
   <section>
     <h2>팀원 비교 그래프 <span class="sub" id="chartSub">팀별 필터 · 이름 클릭 시 강조</span></h2>
